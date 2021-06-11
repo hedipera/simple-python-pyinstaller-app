@@ -9,15 +9,22 @@ pipeline {
                     //This image parameter (of the agent section’s docker parameter) downloads the python:2-alpine
                     //Docker image and runs this image as a separate container. The Python container becomes
                     //the agent that Jenkins uses to run the Build stage of your Pipeline project.
+                    
+                    
+                    // ABRE O AGENT DOCKER PRA EXECUTAR O STEP NUMA SANDBOX
                     image 'python:2-alpine'
                 }
             }
             steps {
                 //This sh step runs the Python command to compile your application and
                 //its calc library into byte code files, which are placed into the sources workspace directory
-                sh 'python -m py_compile sources/add2vals.py sources/calc.py'
+                
+                //ABRE O MÓDULO DE COMPILAÇÃO DOS DOIS SCRIPTS E GERA UM ARQUIVO CRIADO PARA LINGUAGEM DE MÁQUINA (BYTE CODE)
+                sh 'python -m py_compile sources/add2vals.py sources/calc.py
                 //This stash step saves the Python source code and compiled byte code files from the sources
                 //workspace directory for use in later stages.
+                
+                //SALVA O ARQUIVO GERADO SOURCES, DIST, ETC (/SOUCES/DIST/*.PY NA $WORKSPACE, CREIO QUE PODERIA SER COLOCADO AQUI O SAVE ARTIFACT TAMBÉM
                 stash(name: 'compiled-results', includes: 'sources/*.py*')
             }
         }
@@ -67,6 +74,9 @@ pipeline {
                             //This sh step executes the pyinstaller command (in the PyInstaller container) on your simple Python application.
                             //This bundles your add2vals.py Python application into a single standalone executable file
                             //and outputs this file to the dist workspace directory (within the Jenkins home directory).
+                            
+                            //PyInstaller lê um script Python escrito por você. Ele analisa seu código para descobrir todos os outros módulos e bibliotecas de que seu script precisa para ser executado. Em seguida, ele coleta cópias de todos esses arquivos - incluindo o interpretador Python ativo! - e os coloca com seu script em uma única pasta ou, opcionalmente, em um único arquivo executável.
+                            
                             sh "docker run --rm -v ${VOLUME} ${IMAGE} 'pyinstaller -F add2vals.py'"
                         }
                     }

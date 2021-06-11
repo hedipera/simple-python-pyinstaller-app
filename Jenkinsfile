@@ -20,6 +20,7 @@ pipeline {
                 //its calc library into byte code files, which are placed into the sources workspace directory
                 
                 //ABRE O MÓDULO DE COMPILAÇÃO DOS DOIS SCRIPTS E GERA UM ARQUIVO CRIADO PARA LINGUAGEM DE MÁQUINA (BYTE CODE)
+                //The py_compile module provides a function to generate a byte-code file from a source file, and another function used when the module source file is invoked as a script.
                 sh 'python -m py_compile sources/add2vals.py sources/calc.py
                 //This stash step saves the Python source code and compiled byte code files from the sources
                 //workspace directory for use in later stages.
